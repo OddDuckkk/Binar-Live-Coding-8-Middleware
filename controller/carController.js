@@ -2,6 +2,7 @@ const { Car } = require("../models");
 
 async function getAllCars(req, res) {
     try {
+
         const cars = await Car.findAll();
 
         res.status(200).json({

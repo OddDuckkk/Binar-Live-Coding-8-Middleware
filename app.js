@@ -1,3 +1,4 @@
+const morgan = require("morgan");
 const express = require("express");
 const usersRoute = require("./routes/usersRoute");
 const carsRoute = require("./routes/carsRoute");
@@ -7,8 +8,40 @@ const driverRoutes = require("./routes/driverRoute");
 const app = express();
 const port = 3000;
 
-// Reading json from body (client)
+// Middleware : Reading json from body (client)
 app.use(express.json());
+
+// Middleware: LOGGING third part package
+app.use(morgan());
+// Own Middleware 
+app.use((req, res, next) => {
+  console.log('incoming request....')
+  // Better logging
+  next();
+});
+
+// Logging basic
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  console.log("Request time: ");
+  console.log(req.requestTime);
+  // Better logging
+  next();
+});
+app.use((req, res, next) => {
+  req.username = "brandon"
+  console.log("Requested by: ");
+  console.log(req.username);
+  // Better logging
+  next();
+});
+app.use((req, res, next) => {
+  console.log("API requested: ");
+  console.log(req.originalUrl);
+  // Better logging
+  next();
+});
+
 
 // Health Check
 app.get("/", async (req, res) => {
