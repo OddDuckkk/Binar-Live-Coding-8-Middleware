@@ -1,4 +1,5 @@
 const { Car } = require("../models");
+const imagekit = require("../lib/imagekit");
 
 async function getAllCars(req, res) {
     try {
@@ -119,8 +120,34 @@ async function updateCar(req, res) {
 async function createCar(req, res) {
     const { plate, model, type, year } = req.body;
 
+    const images = req.files;
+    const uploadImages = [];
+
+    for (const image of images) {
+        const split = image.originalname.split(".");
+        const ext = split[split.length - 1];
+        const fileName = split[0];
+
+        // Await the image upload
+        const uploadedImage = await imagekit.upload({
+            file: image.buffer.toString('base64'), // Convert buffer to base64
+            fileName: `Car-Image-${fileName}-${Date.now()}.${ext}`,
+        });
+
+        // Push the uploaded image URL to the array
+        uploadImages.push(uploadedImage.url);
+        }
+
+    if (!uploadImages){
+        res.status(400).json({
+            status: "Failed",
+            message: "Failed to add car data because file doesn't exist",
+            isSuccess: false,
+        });
+    }
+    const newCar = req.body;
     try {
-        const newCar = await Car.create({ plate, model, type, year });
+        await Car.create({ plate, model, type, year, images: uploadImages});
         res.status(200).json({
             status: "Success",
             message: "Ping successfully",

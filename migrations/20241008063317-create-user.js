@@ -23,7 +23,7 @@ module.exports = {
             },
             photoProfile: {
                 type: Sequelize.TEXT,
-            }
+            },
         });
     },
     async down(queryInterface, Sequelize) {
