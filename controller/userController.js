@@ -1,4 +1,5 @@
 const { User } = require("../models");
+const imagekit = require("../lib/imagekit");
 
 // Function for get all user data
 async function getAllUser(req, res) {
@@ -124,17 +125,40 @@ async function UpdateUserById(req, res) {
 }
 
 async function createUser(req, res) {
-    console.log(req.file);
+    const file = req.file
+    console.log(file)
+
+    // Photo file processing
+    const split = file.originalname.split(".");
+    const ext = split[split.length - 1];
+    const fileName = split[0];
+
+    // upload image to server
+    const uploadedImage = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: `Profile-${fileName}-${Date.now()}.${ext}`,
+        
+
+    })
+
+    if (!uploadedImage) {
+        res.status(400).json({
+            status: "Failed",
+            message: "Failed to add user data because file doesn't exist",
+            isSuccess: false,
+        });
+    }
+
     const newUser = req.body;
 
     try {
-        await User.create({...newUser, photoProfile: req.file.path});
+        await User.create({...newUser, photoProfile: uploadedImage.url});
 
         res.status(200).json({
             status: "Success",
             message: "Successfully added user data",
             isSuccess: true,
-            data: { ...newUser, photoProfile: req.file.path },
+            data: { ...newUser, photoProfile: uploadedImage.url },
         });
     } catch (error) {
         res.status(500).json({

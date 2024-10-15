@@ -1,11 +1,10 @@
 const express = require("express");
-const multer = require("multer");
+const upload = require('../middlewares/uploader');
 
 const router = express.Router();
 
 const userController = require("../controller/userController");
 
-const upload = multer({dest: "public/images/users/"});
 // API for get all users data
 router.get("/", userController.getAllUser);
 
