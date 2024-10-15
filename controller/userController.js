@@ -124,16 +124,17 @@ async function UpdateUserById(req, res) {
 }
 
 async function createUser(req, res) {
+    console.log(req.file);
     const newUser = req.body;
 
     try {
-        await User.create(newUser);
+        await User.create({...newUser, photoProfile: req.file.path});
 
         res.status(200).json({
             status: "Success",
             message: "Successfully added user data",
             isSuccess: true,
-            data: { newUser },
+            data: { ...newUser, photoProfile: req.file.path },
         });
     } catch (error) {
         res.status(500).json({
