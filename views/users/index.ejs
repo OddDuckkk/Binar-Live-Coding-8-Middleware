@@ -1,0 +1,15 @@
+<table>
+    <th>name</th>
+    <th>photo profile</th>
+    <th>age</th>
+    <th>phone number</th>
+    <% users.map((user)=> { %>
+        <tr>
+            <td><%= user.firstName %></td>
+            <td><img src="<%= user.photoProfile %>"</td>
+            <td><%= user.age %></td>
+            <td><%= user.phoneNumber %></td>
+        </tr>
+    <% }) %>
+    
+</table>
