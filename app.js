@@ -1,10 +1,15 @@
+// third party modules
 const morgan = require("morgan");
 const express = require("express");
+const  expressEJSLayout = require("express-ejs-layouts");
+
+// Own Modules
 const usersRoute = require("./routes/usersRoute");
 const carsRoute = require("./routes/carsRoute");
 const sparepartsRoute = require("./routes/sparepartsRoute");
 const driverRoutes = require("./routes/driverRoute");
 const dashboardRoutes = require("./routes/dashboardRoute");
+
 
 const app = express();
 const port = 3000;
@@ -47,8 +52,11 @@ app.use((req, res, next) => {
 
 // middleware : for express application to read static files
 app.use(express.static(`${__dirname}/public`));
+
 // View engine
 app.set("view engine", "ejs");
+app.use(expressEJSLayout);
+app.set("layout", "layout");
 
 app.get("/dashboard/admin/", async (req, res) => {
   try {
